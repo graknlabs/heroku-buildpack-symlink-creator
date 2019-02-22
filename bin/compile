@@ -7,6 +7,7 @@ BUILD_DIR="$("$REALPATH" "$1")" ## the temporary build path
 RUNTIME_DIR="/app"
 
 originals=$(find $BUILD_DIR/docs/ -name '*.yml') ## paths of the original .yml files
+whitelist_dirs=(client_api concept_api views) # only create symlinks if the file is contained within the given directory names
 
 for original in $originals; do
     original=${original/$BUILD_DIR/$RUNTIME_DIR} # original .yml file path
@@ -18,11 +19,14 @@ for original in $originals; do
     fi
     symlink="${symlink//-/_}" # repalce - with _
     symlink="${symlink/references\//}" # remove /references
+    
+    IFS='/' read -r -a splited_symlink <<< "$symlink" # split symlink into array by "/" as delimeter
+    dir=${splited_symlink[0]} # get the directory to check against whitelist_dirs
 
     symlink="$BUILD_DIR/_data/$symlink" # .yml symlink path
 
-
-    mkdir -p "$(dirname $symlink)" # create the symlink's path if non-existent (-p)
-
-    ln -s $original $symlink # create the symlink
+    if [[ " ${whitelist_dirs[@]} " =~ " ${dir} " ]]; then # allowed to create symlink
+        mkdir -p "$(dirname $symlink)" # create the symlink's path if non-existent (-p)
+        ln -s $original $symlink # create the symlink
+    fi
 done 
