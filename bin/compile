@@ -14,12 +14,8 @@ for original in $originals; do
     symlink=${original#"$RUNTIME_DIR/docs/"} # remove prefix
     digits=${symlink:0:2}
     re='^[0-9]+$'
-    if [[ $digits =~ $re ]] ; then
-        symlink=${symlink:3} # remove page number
-    fi
     symlink="${symlink//-/_}" # repalce - with _
-    symlink="${symlink/references\//}" # remove /references
-    
+
     IFS='/' read -r -a splited_symlink <<< "$symlink" # split symlink into array by "/" as delimeter
     dir=${splited_symlink[0]} # get the directory to check against whitelist_dirs
 
@@ -29,4 +25,4 @@ for original in $originals; do
         mkdir -p "$(dirname $symlink)" # create the symlink's path if non-existent (-p)
         ln -s $original $symlink # create the symlink
     fi
-done 
+done
