@@ -7,7 +7,7 @@ BUILD_DIR="$("$REALPATH" "$1")" ## the temporary build path
 RUNTIME_DIR="/app"
 
 originals=$(find $BUILD_DIR/docs/ -name '*.yml') ## paths of the original .yml files
-whitelist_dirs=(client_api concept_api views) # only create symlinks if the file is contained within the given directory names
+whitelist_dirs=(03_client_api 04_concept_api views) # only create symlinks if the file is contained within the given directory names
 
 for original in $originals; do
     original=${original/$BUILD_DIR/$RUNTIME_DIR} # original .yml file path
